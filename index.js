@@ -15,13 +15,14 @@ app.use(bodyParser.json());
 
 // Endpoint to handle saving/editing user data
 app.post('/saveUser', (req, res) => {
-  const { user, balance } = req.body;
+  const { user, balance} = req.body;
 
   const existingUser = db.get('users').find({ user }).value();
 
   if (existingUser) {
     db.get('users').find({ user }).assign({ balance }).write();
     res.status(200).json({ resultCode: 1, message: 'User balance updated successfully!' });
+    console.log(req.body)
   } else {
     db.get('users').push({ user, balance }).write();
     res.status(200).json({ resultCode: 1, message: 'New user added!' });
@@ -30,7 +31,7 @@ app.post('/saveUser', (req, res) => {
 
 // Endpoint to check user balance
 app.get('/getUserBalance/:userId', (req, res) => {
-  const userId = parseInt(req.params.userId);
+  const userId = req.params.userId;
   
   const user = db.get('users').find({ user: userId }).value();
 
@@ -43,7 +44,7 @@ app.get('/getUserBalance/:userId', (req, res) => {
 
 // Endpoint to edit user balance
 app.put('/editUserBalance/:userId', (req, res) => {
-  const userId = parseInt(req.params.userId);
+  const userId = req.params.userId;
   const { newBalance } = req.body;
 
   const user = db.get('users').find({ user: userId }).value();
@@ -58,7 +59,7 @@ app.put('/editUserBalance/:userId', (req, res) => {
 
 // Endpoint to deduct from user balance
 app.put('/deductUserBalance/:userId', (req, res) => {
-  const userId = parseInt(req.params.userId);
+  const userId = req.params.userId;
   const { amountToDeduct } = req.body;
 
   const user = db.get('users').find({ user: userId }).value();
@@ -86,7 +87,7 @@ app.put('/deductUserBalance/:userId', (req, res) => {
 
 // Endpoint to add to user balance
 app.put('/addUserBalance/:userId', (req, res) => {
-  const userId = parseInt(req.params.userId);
+  const userId = req.params.userId;
   const { amountToAdd } = req.body;
 
   const user = db.get('users').find({ user: userId }).value();
